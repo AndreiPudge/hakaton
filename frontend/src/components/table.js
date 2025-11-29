@@ -6,8 +6,20 @@ import { clientStore } from '../store/clientsStore';
 import { insightsStore } from '../store/insightsStore';
 
 const Table = observer(() => {
-    const {list, searchQuery, loading, error, selectedClient, setSearchQuery, fetchClients, selectClient} = clientStore
-    
+    const {list, searchQuery, loading, error, selectedClient, setSearchQuery, fetchClients, selectClient, setPage, fetchAllClients} = clientStore
+    useEffect(() => {
+    clientStore.fetchAllClients();
+    }, []);
+
+    const handleSearch = () => {
+        clientStore.fetchClients();
+    };
+
+    // При смене страницы
+    const handlePageChange = (page) => {
+        clientStore.setPage(page);
+        clientStore.fetchAllClients();
+    };
     const handleSearchClick = () => {
         fetchClients()
     }
