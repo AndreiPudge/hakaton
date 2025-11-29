@@ -1,0 +1,176 @@
+.recommendations-block {
+  width: 100%;
+  max-width: 360px; /* если это правая колонка */
+}
+
+.recommendations-card {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
+.recommendations-header {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
+
+.card-subtitle {
+  font-size: 13px;
+  color: #6b7280;
+}
+
+.recommendations-filters {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px;
+}
+
+.rec-filter-btn {
+  border-radius: 999px;
+  border: 1px solid #e5e7eb;
+  padding: 4px 10px;
+  font-size: 12px;
+  background: #f9fafb;
+  cursor: pointer;
+}
+
+.rec-filter-btn--active {
+  background: #FF1C25;
+  color: white;
+  border-color: #FF1C25;
+}
+
+.offers-list {
+  margin-top: 8px;
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+.offer-card {
+  border-radius: 10px;
+  border: 1px solid #e5e7eb;
+  padding: 10px 12px;
+  background: #f9fafb;
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+}
+
+.offer-header {
+  display: flex;
+  justify-content: space-between;
+  gap: 6px;
+  align-items: center;
+}
+
+.offer-title {
+  font-size: 14px;
+  font-weight: 600;
+}
+
+.offer-chip {
+  font-size: 11px;
+  padding: 2px 8px;
+  border-radius: 999px;
+  background: #e0f2fe;
+  color: #0369a1;
+  white-space: nowrap;
+}
+
+.offer-description {
+  font-size: 13px;
+  color: #4b5563;
+}
+
+.offer-meta {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+  margin-top: 4px;
+}
+
+.offer-meta-item {
+  display: flex;
+  gap: 4px;
+  font-size: 12px;
+  align-items: center;
+}
+
+.offer-meta-label {
+  color: #6b7280;
+}
+
+.offer-meta-value {
+  font-weight: 500;
+}
+
+.offer-meta-risk {
+  padding: 2px 6px;
+  border-radius: 999px;
+  font-size: 11px;
+}
+
+.offer-meta-risk--low {
+  background: #dcfce7;
+  color: #15803d;
+}
+
+.offer-meta-risk--medium {
+  background: #fef3c7;
+  color: #92400e;
+}
+
+.offer-meta-risk--high {
+  background: #fee2e2;
+  color: #b91c1c;
+}
+
+.offer-reason-block {
+  margin-top: 4px;
+}
+
+.offer-reason-label {
+  font-size: 11px;
+  color: #9ca3af;
+  text-transform: uppercase;
+  letter-spacing: 0.04em;
+}
+
+.offer-reason-text {
+  font-size: 12px;
+  color: #374151;
+}
+
+.offer-actions {
+  margin-top: 6px;
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px;
+}
+
+.offer-btn {
+  font-size: 12px;
+  border-radius: 999px;
+  padding: 5px 10px;
+  border: 1px solid #e5e7eb;
+  background: white;
+  cursor: pointer;
+}
+
+.offer-btn--primary {
+  background: #FF1C25;
+  border-color: #FF1C25;
+  color: white;
+}
+
+.offer-btn--ghost {
+  background: transparent;
+}
+
+.empty-state {
+  font-size: 13px;
+  color: #9ca3af;
+  padding: 8px 4px;
+}
