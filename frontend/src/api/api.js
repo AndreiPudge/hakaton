@@ -46,11 +46,31 @@ async function apiRequest(path, options = {}) {
 
 // -------------------- КЛИЕНТЫ --------------------
 
+// -------------------- КЛИЕНТЫ --------------------
+
 // Получить список клиентов по поиску
 // GET /api/clients?search=...
 export async function fetchClientsApi(searchQuery) {
   const query = searchQuery ? searchQuery.trim() : "";
   const path = `/api/clients?search=${encodeURIComponent(query)}`;
+  return apiRequest(path, {
+    method: "GET",
+  });
+}
+
+// Получить ВСЕХ клиентов (для таблицы)
+// GET /api/clients
+export async function fetchAllClientsApi(page = 1, limit = 10) {
+  const path = `/api/clients?page=${page}&limit=${limit}`;
+  return apiRequest(path, {
+    method: "GET",
+  });
+}
+
+// Получить клиента по ID
+// GET /api/clients/:id
+export async function fetchClientByIdApi(clientId) {
+  const path = `/api/clients/${clientId}`;
   return apiRequest(path, {
     method: "GET",
   });
