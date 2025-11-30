@@ -3,8 +3,18 @@ import pickle
 from sklearn.preprocessing import OneHotEncoder,LabelEncoder
 from sklearn.model_selection import train_test_split,GridSearchCV
 import xgboost as xgb
+import os
 
 def predict(data)->pd.DataFrame:
+
+    # Поднимаемся из app в ml и спускаемся в data
+    base_dir = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
+    data_dir = os.path.join(base_dir, 'data')
+    
+    # Формируем пути
+    columns_path = os.path.join(data_dir, 'columns_list.txt')
+    model_path = os.path.join(data_dir, 'model.pkl')
+
     df=data
     df = df.drop(columns=['dt', 'id'])
     def convert_european_number(x):
@@ -26,7 +36,7 @@ def predict(data)->pd.DataFrame:
         if converted.notna().sum() == df[col].notna().sum():
             df[col] = converted
 
-    with open('columns_list.txt', 'r', encoding='utf-8') as f:
+    with open(columns_path, 'r', encoding='utf-8') as f:
         columns_array = [line.strip() for line in f]
 
     df = df[columns_array]
@@ -36,11 +46,14 @@ def predict(data)->pd.DataFrame:
         le = LabelEncoder()
         df[col] = le.fit_transform(df[col].astype(str))
 
-    with open('model.pkl', 'rb') as f:
+    with open(model_path, 'rb') as f:
         loaded_model = pickle.load(f)
     predictions = loaded_model.predict(df)
     return predictions
 
+base_dir = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
+data_dir = os.path.join(base_dir, 'data')
+csv_path = os.path.join(data_dir, 'hackathon_income_test.csv')
 
-das=pd.read_csv('hackathon_income_test.csv',sep=';')
+das=pd.read_csv(csv_path,sep=';')
 print(predict(das))

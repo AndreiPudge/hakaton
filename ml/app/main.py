@@ -1,13 +1,28 @@
-from fastapi import FastAPI
+from fastapi import FastAPI, HTTPException
 import pandas as pd
 import random
 from pydantic import BaseModel
 from typing import List
+import os
+from ml.app.predict_function import predict
 
-app = FastAPI(title="ML Data Service")
+app = FastAPI()
 
 # Загружаем данные при старте
-df = pd.read_excel("data/123.xlsx")
+base_dir = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
+data_dir = os.path.join(base_dir, 'data')
+csv_path = os.path.join(data_dir, 'hackathon_income_test.csv')  # Полный путь к файлу
+df = pd.read_csv(csv_path, sep=';')
+
+# Преобразуем числовые колонки из строк с запятыми в float
+df['avg_amount_daily_transactions_90d'] = (
+    df['avg_amount_daily_transactions_90d']
+    .astype(str)
+    .str.replace(',', '.')
+    .replace('nan', '0')
+    .astype(float)
+    .fillna(0)
+)
 
 class ClientResponse(BaseModel):
     id: int
@@ -15,13 +30,18 @@ class ClientResponse(BaseModel):
     city: str
     avg_spending_90_days: float
 
+class PredictionRequest(BaseModel):  # Добавь эту модель
+    id: int
+
 @app.get("/health")
 async def health():
     return {"status": "healthy"}
 
-@app.get("/random-clients/{count}")
-async def get_random_clients(count: int = 100) -> List[ClientResponse]:
-    """Возвращает случайные последовательные строки с нужными колонками"""
+@app.get("/random-clients")
+async def get_random_clients() -> List[ClientResponse]:
+    #Возвращает случайные последовательные строки с нужными колонками
+    count = 100
+
     if count > len(df):
         count = len(df)
     
@@ -35,21 +55,23 @@ async def get_random_clients(count: int = 100) -> List[ClientResponse]:
         client = ClientResponse(
             id=int(row['id']),
             gender=str(row['gender']),
-            city=str(row['city_smart_name']),  # замените на актуальное название
-            avg_spending_90_days=float(row.get('summarur_1m_purch', 0))  # замените на актуальное
+            city=str(row['city_smart_name']),
+            avg_spending_90_days=float(row['avg_amount_daily_transactions_90d'])
         )
         clients.append(client)
     
     return clients
 
-@app.get("/client/{client_id}")
-async def get_client_by_id(client_id: int) -> ClientResponse:
-    """Получить конкретного клиента по ID"""
-    client_data = df[df['id'] == client_id].iloc[0]
+@app.post("/predict")
+async def predict_single(request: PredictionRequest):
+    # Находим запись по ID
+    client_data = df[df['id'] == request.id].iloc[0:1]
     
-    return ClientResponse(
-        id=int(client_data['id']),
-        gender=str(client_data['gender']),
-        city=str(client_data['city_smart_name']),
-        avg_spending_90_days=float(client_data.get('summarur_1m_purch', 0))
-    )
+    if client_data.empty:
+        raise HTTPException(status_code=404, detail="Client not found")
+    
+    # Вызываем твою функцию predict
+    prediction = predict(client_data)[0]
+    
+    return {"id": request.id, "prediction": float(prediction)}
+
