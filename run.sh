@@ -10,6 +10,7 @@ python3 shared/generate_key.py
 
 # Загружаем переменную в окружение
 export $(grep -v '^#' .env | xargs)
+export $(grep -v '^#' .env.keys | xargs)
 
 # Запуск серверов в фоне
 python3 -m uvicorn ml.app.main:app --host 0.0.0.0 --port 8000 &

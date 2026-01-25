@@ -5,10 +5,11 @@ import time
 from backend.app.api.router import router
 from fastapi.middleware.cors import CORSMiddleware
 import os
+from config import settings as s
 
 
 ### Server Launching ###
-def wait_for_service(url: str = "http://localhost:8000/health", timeout: int = 30):
+def wait_for_service(url: str = f"{s.domain}:{s.backend_port}/health", timeout: int = 30):
     # Ожидание ответа сервиса
     for i in range(timeout):
         try:
@@ -22,8 +23,8 @@ def wait_for_service(url: str = "http://localhost:8000/health", timeout: int = 3
 @asynccontextmanager
 async def lifespan(app: FastAPI):
     print("Waiting for service on port 8000...")
-    wait_for_service("http://localhost:8000/health")
-    print("Service on port 8000 is ready!")
+    wait_for_service(f"{s.domain}:{s.service_port}/health")
+    print(f"Service on port {s.service_port} is ready!")
     yield
     print("Server shutdown.")
 
@@ -48,7 +49,7 @@ SERVICE_KEY = os.getenv("SERVICE_API_KEY")
 if not SERVICE_KEY:
     raise RuntimeError("SERVICE_API_KEY not set")
 service_client = httpx.AsyncClient(
-    base_url="http://localhost:8000",
+    base_url=f"{s.domain}:{s.service_port}",
     headers={"X-API-KEY": SERVICE_KEY}
 )
 
@@ -62,14 +63,14 @@ app.include_router(router)
 @app.post("/api/predict")
 async def api_prediction():
     async with httpx.AsyncClient() as client:
-        response = await service_client.post("http://localhost:8000/predict")
+        response = await service_client.post(f"{s.domain}:{s.service_port}/predict")
         return response.json
 
 # Service Random Clients
 @app.post("/api/random-cli")
 async def api_random_clients():
     async with httpx.AsyncClient() as client:
-        response = await service_client.post("http://localhost:8000/random-cli")
+        response = await service_client.post(f"{s.domain}:{s.service_port}/random-cli")
         return response.json
 
 # Health Check

@@ -5,7 +5,7 @@ import os
 def generate_env_file():
     # Master Path
     root_dir = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
-    env_path = os.path.join(root_dir, '.env')
+    env_path = os.path.join(root_dir, '.env.keys')
 
     # Key Generate
     api_key = secrets.token_urlsafe(32)
