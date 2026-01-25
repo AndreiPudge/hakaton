@@ -3,7 +3,7 @@
 # run.sh
 
 # Активировать виртуальное окружение
-source /Users/yurchenkonikita/Development/BackendPattern/venv/bin/activate
+source /Users/yurchenkonikita/hakaton/venv/bin/activate
 
 # Генерируем API-ключ
 python3 shared/generate_key.py
@@ -12,7 +12,7 @@ python3 shared/generate_key.py
 export $(grep -v '^#' .env | xargs)
 
 # Запуск серверов в фоне
-python3 -m uvicorn service.app.main:app --host 0.0.0.0 --port 8000 &
+python3 -m uvicorn ml.app.main:app --host 0.0.0.0 --port 8000 &
 SERVICE_PID=$!
 
 python3 -m uvicorn backend.app.main:app --host 0.0.0.0 --port 9000 &
