@@ -1,11 +1,10 @@
 import pandas as pd
 import pickle
-from sklearn.preprocessing import OneHotEncoder,LabelEncoder
-from sklearn.model_selection import train_test_split,GridSearchCV
-import xgboost as xgb
+from sklearn.preprocessing import LabelEncoder
+from sklearn.model_selection import train_test_split
 import os
 
-def predict(data)->pd.DataFrame:
+def predict()->list[float]:
 
     # Поднимаемся из app в ml и спускаемся в data
     base_dir = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
@@ -15,7 +14,7 @@ def predict(data)->pd.DataFrame:
     columns_path = os.path.join(data_dir, 'columns_list.txt')
     model_path = os.path.join(data_dir, 'model.pkl')
 
-    df=data
+    df = pd.read_csv(csv_path, sep = ';')
     df = df.drop(columns=['dt', 'id'])
     def convert_european_number(x):
         if isinstance(x, str):
@@ -49,11 +48,8 @@ def predict(data)->pd.DataFrame:
     with open(model_path, 'rb') as f:
         loaded_model = pickle.load(f)
     predictions = loaded_model.predict(df)
-    return predictions
+    return predictions.tolist()
 
 base_dir = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 data_dir = os.path.join(base_dir, 'data')
 csv_path = os.path.join(data_dir, 'hackathon_income_test.csv')
-
-das=pd.read_csv(csv_path,sep=';')
-print(predict(das))
