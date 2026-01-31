@@ -13,7 +13,7 @@ def wait_for_service(url: str = f"{s.domain}:{s.backend_port}/health", timeout: 
     # Ожидание ответа сервиса
     for i in range(timeout):
         try:
-            response = httpx.get(url, timeout = 1)
+            response = httpx.get(url, verify=False, timeout = 1)
             if response.status_code == 200:
                 return
         except:
@@ -22,7 +22,7 @@ def wait_for_service(url: str = f"{s.domain}:{s.backend_port}/health", timeout: 
 
 @asynccontextmanager
 async def lifespan(app: FastAPI):
-    print("Waiting for service on port 8000...")
+    print(f"Waiting for service on port {s.service_port}...")
     wait_for_service(f"{s.domain}:{s.service_port}/health")
     print(f"Service on port {s.service_port} is ready!")
     yield
