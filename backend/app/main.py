@@ -9,11 +9,11 @@ from config.config import settings as s
 
 
 ### Server Launching ###
-def wait_for_service(url: str = f"{s.domain}:{s.backend_port}/health", timeout: int = 30):
+def wait_for_service(url: str = f"{s.domain}:{s.service_port}/health", timeout: int = 30):
     # Ожидание ответа сервиса
     for i in range(timeout):
         try:
-            response = httpx.get(url, verify=False, timeout = 1)
+            response = httpx.get(url, timeout = 1)
             if response.status_code == 200:
                 return
         except:

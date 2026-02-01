@@ -1,4 +1,5 @@
 .DS_Store
 config/.env
 shared/.env.keys
-certs/
+certs/cert.pem
+certs/key.pem
