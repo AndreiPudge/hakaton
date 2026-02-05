@@ -1,7 +1,11 @@
 # dependencies
-/frontend/node_modules
+**/node_modules/
 /.pnp
 .pnp.js
+
+# cache
+.eslintcache
+.cache/
 
 npm-debug.log*
 yarn-debug.log*
