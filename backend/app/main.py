@@ -64,14 +64,14 @@ app.include_router(router)
 async def api_prediction():
     async with httpx.AsyncClient() as client:
         response = await service_client.post(f"{s.domain}:{s.service_port}/predict")
-        return response.json
+        return response.json()
 
 # Service Random Clients
 @app.post("/api/random-cli")
 async def api_random_clients():
     async with httpx.AsyncClient() as client:
         response = await service_client.post(f"{s.domain}:{s.service_port}/random-cli")
-        return response.json
+        return response.json()
 
 # Health Check
 @app.get("/health")
