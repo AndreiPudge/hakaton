@@ -25,12 +25,12 @@ def wait_for_service(url: str = f"{s.domain}:{s.service_port}/health", timeout: 
 
 @asynccontextmanager
 async def lifespan(app: FastAPI):
-    print(f"Waiting for service on port {s.service_port}...")
+    #print(f"Waiting for service on port {s.service_port}...")
     wait_for_service(f"{s.domain}:{s.service_port}/health")
-    print(f"Service on port {s.service_port} is ready!")
-    print(f"Starting server on port {s.backend_port}...")
+    #print(f"Service on port {s.service_port} is ready!")
+    #print(f"Starting server on port {s.backend_port}...")
     yield
-    print("Server shutdown.")
+    #print("Server shutdown.")
 
 app = FastAPI(lifespan=lifespan, title="Backend API")
 
@@ -40,7 +40,7 @@ app = FastAPI(lifespan=lifespan, title="Backend API")
 
 app.add_middleware(
     CORSMiddleware,
-    allow_origins=["http://localhost:3000"],
+    allow_origins=[f"{s.domain}:{s.frontend_port}"],
     allow_credentials=True,
     allow_methods=["GET", "POST", "PUT", "DELETE"],
     allow_headers=["*"],

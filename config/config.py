@@ -7,6 +7,8 @@ class Settings(BaseSettings):
     backend_port: int = 9000
     service_host: str = "0.0.0.0"
     service_port: int = 8000
+    frontend_host: str = "0.0.0.0"
+    frontend_port: int = 3000
     
     # PATH
     model_path: str = "ml/data/model.pkl"
