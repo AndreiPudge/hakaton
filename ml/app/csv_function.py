@@ -29,7 +29,7 @@ df['avg_amount_daily_transactions_90d'] = (
 
 def get_random_clients() -> List[ClientResponse]:
     #Возвращает случайные последовательные строки с нужными колонками
-    count = 100
+    count = 20
 
     if count > len(df):
         count = len(df)

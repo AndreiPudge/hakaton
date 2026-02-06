@@ -1,10 +1,10 @@
 // Базовый URL бэкенда (FastAPI/Flask и т.п.)
-const API_BASE_URL =
-process.env.REACT_APP_API_BASE_URL || "http://localhost:9000";
+const API_BASE_URL = process.env.REACT_APP_API_BASE_URL || "http://localhost:9000";
 
 // Общая функция для запросов
-async function apiRequest(path, options = {}) {
+/* async function apiRequest(path, options = {}) {
   const url =   `${API_BASE_URL}${path}`;
+  console.log("Fetching URL:", url);
 
   const defaultHeaders = {
     "Content-Type": "application/json",
@@ -42,6 +42,11 @@ async function apiRequest(path, options = {}) {
     // на всякий случай, если бэк вернул не JSON
     return text;
   }
+} */
+
+  async function apiRequest(path, options = {}) {
+  const url = `http://localhost:9000${path}`;
+  return fetch(url, options).then(res => res.json());
 }
 
 // -------------------- КЛИЕНТЫ --------------------
@@ -50,7 +55,7 @@ async function apiRequest(path, options = {}) {
 // GET /api/clients?search=...
 export async function fetchClientsApi(searchQuery) {
   const query = searchQuery ? searchQuery.trim() : "";
-  const path = `/api/clients?search=${encodeURIComponent(query)}`;
+  const path = `${API_BASE_URL}/api/clients?search=${encodeURIComponent(query)}`;
   return apiRequest(path, {
     method: "GET",
   });
@@ -60,9 +65,11 @@ export async function fetchClientsApi(searchQuery) {
 
 // Получить прогноз дохода, факторы и рекомендации
 // GET /api/clients/:id/insights
-export async function fetchClientInsightsApi(clientId) {
-  const path = `/api/clients/${clientId}/insights`;
+export async function fetchClientInsightsApi(clientId, requestData = {}) {
+  const path = `${API_BASE_URL}/api/clients/${clientId}/insights`;
   return apiRequest(path, {
-    method: "GET",
+    method: "POST",
+    headers: { "Content-Type": "application/json", },
+    body: JSON.stringify(requestData),
   });
 }

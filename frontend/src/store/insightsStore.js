@@ -19,6 +19,35 @@ class InsightsStore {
     this.error = null;
 
     try {
+      // МЕНЯЕМ GET на POST и добавляем тело запроса
+      const resp = await fetch(`/api/clients/${clientId}/insights`, {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({}), // или передайте нужные данные
+      });
+      
+      if (!resp.ok) {
+        throw new Error("Ошибка загрузки прогноза");
+      }
+      
+      const data = await resp.json();
+      // ... обработка данных
+    } catch (err) {
+      // ... обработка ошибок
+    } finally {
+      this.loading = false;
+    }
+  }
+
+  /*async fetchInsights(clientId) {
+    if (!clientId) return;
+
+    this.loading = true;
+    this.error = null;
+
+    try {
       const resp = await fetch(`/api/clients/${clientId}/insights`);
       if (!resp.ok) {
         throw new Error("Ошибка загрузки прогноза");
@@ -38,7 +67,7 @@ class InsightsStore {
     } finally {
       this.loading = false;
     }
-  }
+  } */
 
   clear() {
     this.loading = false;

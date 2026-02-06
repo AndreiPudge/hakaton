@@ -3,7 +3,8 @@ import pickle
 from sklearn.preprocessing import LabelEncoder
 import os
 
-def predict()->list[float]:
+
+def predict(client_id: int)->float:
 
     # Поднимаемся из app в ml и спускаемся в data
     base_dir = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
@@ -47,7 +48,11 @@ def predict()->list[float]:
     with open(model_path, 'rb') as f:
         loaded_model = pickle.load(f)
     predictions = loaded_model.predict(df)
-    return predictions.tolist()
+
+    if client_id < 0 or client_id >= len(predictions):
+        raise ValueError("Invalid client_id")
+
+    return float(predictions[client_id])
 
 base_dir = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 data_dir = os.path.join(base_dir, 'data')

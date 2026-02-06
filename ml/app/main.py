@@ -8,9 +8,9 @@ app = FastAPI(title="Service API")
 
 app.add_middleware(AuthMiddleware)
 
-@app.post("/predict")
-async def prediction():
-    return {"predictions": predict()}
+@app.post("/clients/{client_id}/insights")
+async def prediction(client_id: int):
+    return {"predictions": predict(client_id)}
 
 @app.post("/random-cli")
 async def random_clients():
