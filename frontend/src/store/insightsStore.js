@@ -19,7 +19,6 @@ class InsightsStore {
     this.error = null;
 
     try {
-      // МЕНЯЕМ GET на POST и добавляем тело запроса
       const resp = await fetch(`/api/clients/${clientId}/insights`, {
         method: "POST",
         headers: {

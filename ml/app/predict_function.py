@@ -2,19 +2,12 @@ import pandas as pd
 import pickle
 from sklearn.preprocessing import LabelEncoder
 import os
+from config.config import settings as s
 
 
 def predict(client_id: int)->float:
 
-    # Поднимаемся из app в ml и спускаемся в data
-    base_dir = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
-    data_dir = os.path.join(base_dir, 'data')
-    
-    # Формируем пути
-    columns_path = os.path.join(data_dir, 'columns_list.txt')
-    model_path = os.path.join(data_dir, 'model.pkl')
-
-    df = pd.read_csv(csv_path, sep = ';')
+    df = pd.read_csv(s.csv_data_path, sep = ';')
     df = df.drop(columns=['dt', 'id'])
     def convert_european_number(x):
         if isinstance(x, str):
@@ -35,7 +28,7 @@ def predict(client_id: int)->float:
         if converted.notna().sum() == df[col].notna().sum():
             df[col] = converted
 
-    with open(columns_path, 'r', encoding='utf-8') as f:
+    with open(s.columns_list_path, 'r', encoding='utf-8') as f:
         columns_array = [line.strip() for line in f]
 
     df = df[columns_array]
@@ -45,7 +38,7 @@ def predict(client_id: int)->float:
         le = LabelEncoder()
         df[col] = le.fit_transform(df[col].astype(str))
 
-    with open(model_path, 'rb') as f:
+    with open(s.model_path, 'rb') as f:
         loaded_model = pickle.load(f)
     predictions = loaded_model.predict(df)
 
@@ -53,7 +46,3 @@ def predict(client_id: int)->float:
         raise ValueError("Invalid client_id")
 
     return float(predictions[client_id])
-
-base_dir = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
-data_dir = os.path.join(base_dir, 'data')
-csv_path = os.path.join(data_dir, 'hackathon_income_test.csv')

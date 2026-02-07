@@ -3,6 +3,7 @@ import os
 from pydantic import BaseModel
 import random
 from typing import List
+from config.config import settings as s
 
 # Модель ответа
 class ClientResponse(BaseModel):
@@ -12,10 +13,8 @@ class ClientResponse(BaseModel):
     avg_spending_90_days: float
 
 # Загружаем данные при старте
-base_dir = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
-data_dir = os.path.join(base_dir, 'data')
-csv_path = os.path.join(data_dir, 'hackathon_income_test.csv')  # Полный путь к файлу
-df = pd.read_csv(csv_path, sep=';')
+
+df = pd.read_csv(s.csv_data_path, sep=';')
 
 # Преобразуем числовые колонки из строк с запятыми в float
 df['avg_amount_daily_transactions_90d'] = (
