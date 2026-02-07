@@ -2,7 +2,7 @@ import pandas as pd
 import pickle
 from sklearn.preprocessing import LabelEncoder
 import os
-from config.config import settings as s
+from ml.app.config.config import settings as s
 
 
 def predict(client_id: int)->float:

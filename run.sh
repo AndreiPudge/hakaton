@@ -9,7 +9,7 @@ source /Users/yurchenkonikita/hakaton/venv/bin/activate
 python3 shared/generate_key.py
 
 # Загружаем переменную в окружение
-export $(grep -v '^#' config/.env | xargs)
+export $(grep -v '^#' .env | xargs)
 export $(grep -v '^#' shared/.env.keys | xargs)
 
 # Логи

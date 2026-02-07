@@ -3,7 +3,7 @@ import os
 from pydantic import BaseModel
 import random
 from typing import List
-from config.config import settings as s
+from ml.app.config.config import settings as s
 
 # Модель ответа
 class ClientResponse(BaseModel):
