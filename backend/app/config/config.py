@@ -20,7 +20,7 @@ class Settings(BaseSettings):
     cors_origins: list = ["*"]
     
     class Config:
-        env_file = "config/.env"
+        #env_file = "config/.env"
         case_sensitive = False
         extra = 'allow'  # разрешает лишние поля
 
