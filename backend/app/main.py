@@ -1,7 +1,7 @@
 from fastapi import FastAPI, Request
-from contextlib import asynccontextmanager
 import httpx
 import time
+from contextlib import asynccontextmanager
 from backend.app.api.router import router
 from fastapi.middleware.cors import CORSMiddleware
 import os
@@ -11,28 +11,12 @@ from asyncio import Semaphore
 import asyncio
 
 
-### Server Launching ###
-def wait_for_service(url: str = f"{s.domain}:{s.service_port}/health", timeout: int = 30):
-    # Ожидание ответа сервиса
-    for i in range(timeout):
-        try:
-            response = httpx.get(url, timeout = 1)
-            if response.status_code == 200:
-                return
-        except:
-            time.sleep(1)
-    raise TimeoutError(f"Service ERROR! ({url})")
-
 @asynccontextmanager
 async def lifespan(app: FastAPI):
-    #print(f"Waiting for service on port {s.service_port}...")
-    wait_for_service(f"{s.domain}:{s.service_port}/health")
-    #print(f"Service on port {s.service_port} is ready!")
-    #print(f"Starting server on port {s.backend_port}...")
+    asyncio.create_task(wait_for_service())
     yield
-    #print("Server shutdown.")
 
-app = FastAPI(lifespan=lifespan, title="Backend API")
+app = FastAPI(lifespan=lifespan, title = "Backen API")
 
 #######################################################
 
@@ -60,11 +44,26 @@ async def hmr_middleware(request: Request, call_next):
 
 SERVICE_KEY = os.getenv("SERVICE_API_KEY")
 if not SERVICE_KEY:
-    raise RuntimeError("SERVICE_API_KEY not set")
+    print("WARNING:     SERVICE_API_KEY NOT SET!")
 service_client = httpx.AsyncClient(
     base_url=f"{s.domain}:{s.service_port}",
-    headers={"X-API-KEY": SERVICE_KEY}
+    headers={"X-API-KEY": SERVICE_KEY} if SERVICE_KEY else {}
 )
+
+#######################################################
+
+### SERVICE CONNECTION CHECK ###
+
+async def wait_for_service(url: str = f"{s.domain}:{s.service_port}/health", timeout: int = 30):
+    async with httpx.AsyncClient() as client:
+        for i in range(timeout):
+            try:
+                response = await client.get(url, timeout = 1)
+                if response.status_code == 200:
+                    return
+            except:
+                time.sleep(1)
+        print(f"INFO:     {s.domain}:{s.service_port} - Timeout ERROR!")
 
 #######################################################
 
@@ -90,7 +89,8 @@ async def api_prediction(client_id: int):
     
     # SEMAPHORE QUEUE
     async with ml_semaphore:
-        async with httpx.AsyncClient(timeout = 30.0) as client:
+        timeout = httpx.Timeout(30.0, connect=30.0)
+        async with httpx.AsyncClient(timeout=timeout) as client:
             response = await service_client.post(f"{s.domain}:{s.service_port}/clients/{client_id}/insights")
             result = response.json()
 
