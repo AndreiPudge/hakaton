@@ -13,24 +13,28 @@ export $(grep -v '^#' .env | xargs)
 export $(grep -v '^#' shared/.env.keys | xargs)
 
 # Логи
-LOG_FILE="console.log"
+LOG_FILE="../console.log"
 > "$LOG_FILE"
 
+cd ml
 # Запуск серверов в фоне
-python3 -m uvicorn ml.app.main:app --host $SERVICE_HOST --port $SERVICE_PORT 2>&1 | tee -a "$LOG_FILE" &
+python3 -m uvicorn app.main:app --host $SERVICE_HOST --port $SERVICE_PORT 2>&1 | tee -a "$LOG_FILE" &
 #python3 -m uvicorn ml.app.main:app --host $SERVICE_HOST --port $SERVICE_PORT --ssl-keyfile certs/key.pem --ssl-certfile certs/cert.pem &
 SERVICE_PID=$!
+cd ..
 
-python3 -m uvicorn backend.app.main:app --host $BACKEND_HOST --port $BACKEND_PORT 2>&1 | tee -a "$LOG_FILE" &
+cd backend
+python3 -m uvicorn app.main:app --host $BACKEND_HOST --port $BACKEND_PORT 2>&1 | tee -a "$LOG_FILE" &
 #python3 -m uvicorn backend.app.main:app --host $BACKEND_HOST --port $BACKEND_PORT --ssl-keyfile certs/key.pem --ssl-certfile certs/cert.pem &
 BACKEND_PID=$!
+cd ..
 
 sleep 5
 
 echo "Сервис запущен на порту $SERVICE_PORT (PID: $((SERVICE_PID-1)))" | tee -a "$LOG_FILE"
 echo "Бекенд запущен на порту $BACKEND_PORT (PID: $((BACKEND_PID-1)))" | tee -a "$LOG_FILE"
 
-cd frontend || exit 1
+cd frontend
 
 npm start 2>&1 | tee -a "../$LOG_FILE" &
 FRONTEND_PID=$!

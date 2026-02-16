@@ -1,5 +1,4 @@
 from fastapi import FastAPI
-from app.predict_function import predict
 from app.csv_function import get_random_clients
 from app.middleware.secure import AuthMiddleware
 
@@ -10,7 +9,8 @@ app.add_middleware(AuthMiddleware)
 
 @app.post("/clients/{client_id}/insights")
 async def prediction(client_id: int):
-    return predict(client_id)
+    #return predict(client_id)
+    return "adsa"
 
 @app.post("/random-cli")
 async def random_clients():

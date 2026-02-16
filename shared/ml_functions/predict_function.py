@@ -1,10 +1,13 @@
 import pandas as pd
+from typing import List
 import pickle
 from sklearn.preprocessing import LabelEncoder
 from shared_config.config import settings as s
 
+columns_list_path = "shared/ml_functions/db/columns_list.txt"
+model_path = "shared/ml_functions/db/model.pkl"
 
-def predict(client_id: int)->float:
+def predict()->List[float]:
 
     df = pd.read_csv(s.csv_data_path, sep = ';')
     df = df.drop(columns=['dt', 'id'])
@@ -27,7 +30,7 @@ def predict(client_id: int)->float:
         if converted.notna().sum() == df[col].notna().sum():
             df[col] = converted
 
-    with open(s.columns_list_path, 'r', encoding='utf-8') as f:
+    with open(columns_list_path, 'r', encoding='utf-8') as f:
         columns_array = [line.strip() for line in f]
 
     df = df[columns_array]
@@ -37,11 +40,8 @@ def predict(client_id: int)->float:
         le = LabelEncoder()
         df[col] = le.fit_transform(df[col].astype(str))
 
-    with open(s.model_path, 'rb') as f:
+    with open(model_path, 'rb') as f:
         loaded_model = pickle.load(f)
     predictions = loaded_model.predict(df)
-
-    if client_id < 0 or client_id >= len(predictions):
-        raise ValueError("Invalid client_id")
-
-    return float(predictions[client_id])
+    #print(predictions.tolist())
+    return predictions.tolist()

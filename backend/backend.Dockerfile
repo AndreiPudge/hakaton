@@ -3,6 +3,7 @@ FROM python:3.14-alpine
 WORKDIR /backend
 
 # Копируем и устанавливаем зависимости
+COPY ../shared_config /backend/shared_config
 COPY backend/requirements.txt /backend
 RUN pip install -r requirements.txt
 

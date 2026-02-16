@@ -1,7 +1,7 @@
 from fastapi import Request
 from fastapi.responses import JSONResponse
 from starlette.middleware.base import BaseHTTPMiddleware
-from app.config.config import settings as s
+from shared_config.config import settings as s
 import os
 
 # Читаем из окружения

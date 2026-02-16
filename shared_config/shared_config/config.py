@@ -11,9 +11,7 @@ class Settings(BaseSettings):
     frontend_port: int = 3000
     
     # PATH
-    model_path: str = "data/model.pkl"
     csv_data_path: str = "data/hackathon_income_test.csv"
-    columns_list_path: str = "data/columns_list.txt"
     clients_db_path: str = "data/clients.db"
     
     # CORS
