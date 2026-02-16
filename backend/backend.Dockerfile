@@ -1,11 +1,12 @@
-FROM python:3.14.3-slim
+FROM python:3.14-alpine
 
-WORKDIR /app
+WORKDIR /backend
 
-COPY backend/requirements.txt .
+# Копируем и устанавливаем зависимости
+COPY backend/requirements.txt /backend
 RUN pip install -r requirements.txt
 
-COPY . .
+# Копируем код
+COPY /backend /backend
 
-CMD ["python3", "-m", "uvicorn", "backend.app.main:app", "--host", "0.0.0.0", "--port", "9000"]
- 
+CMD ["python3", "-m", "uvicorn", "app.main:app", "--host", "0.0.0.0", "--port", "9000"]

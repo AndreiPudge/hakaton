@@ -2,11 +2,11 @@ from fastapi import FastAPI, Request
 import httpx
 import time
 from contextlib import asynccontextmanager
-from backend.app.api.router import router
+from app.api.router import router
 from fastapi.middleware.cors import CORSMiddleware
 import os
-from backend.app.config.config import settings as s
-from backend.app.middleware.hmr_filter import hmr_filter_middleware
+from shared_config.config import settings as s
+from app.middleware.hmr_filter import hmr_filter_middleware
 from asyncio import Semaphore
 import asyncio
 

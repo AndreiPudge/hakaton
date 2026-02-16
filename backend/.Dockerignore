@@ -1,0 +1,7 @@
+**/ml
+**/frontend
+**/venv
+**/node_modules
+**/data
+**/__pycache__
+**/.DS_Store

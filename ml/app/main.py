@@ -1,7 +1,7 @@
 from fastapi import FastAPI
-from ml.app.predict_function import predict
-from ml.app.csv_function import get_random_clients
-from ml.app.middleware.secure import AuthMiddleware
+from app.predict_function import predict
+from app.csv_function import get_random_clients
+from app.middleware.secure import AuthMiddleware
 
 
 app = FastAPI(title="Service API")
