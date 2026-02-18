@@ -13,7 +13,7 @@ yarn-error.log*
 
 .DS_Store
 .env
-shared/.env.keys
+shared/generate/.env.keys
 certs/cert.pem
 certs/key.pem
 frontend/README.md
@@ -21,3 +21,4 @@ frontend/src/api/api.js.orig
 console.log
 run.sh.old
 hakaton.code-workspace
+data/insights.db

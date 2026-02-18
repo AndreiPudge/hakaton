@@ -24,7 +24,7 @@ app = FastAPI(lifespan=lifespan, title = "Backen API")
 
 app.add_middleware(
     CORSMiddleware,
-    allow_origins=[f"{s.domain}:{s.frontend_port}"],
+    allow_origins=[f"http://{s.frontend_host}:{s.frontend_port}"],
     allow_credentials=True,
     allow_methods=["GET", "POST", "PUT", "DELETE"],
     allow_headers=["*"],
@@ -46,7 +46,7 @@ SERVICE_KEY = os.getenv("SERVICE_API_KEY")
 if not SERVICE_KEY:
     print("WARNING:     SERVICE_API_KEY NOT SET!")
 service_client = httpx.AsyncClient(
-    base_url=f"{s.domain}:{s.service_port}",
+    base_url=f"http://{s.service_host}:{s.service_port}",
     headers={"X-API-KEY": SERVICE_KEY} if SERVICE_KEY else {}
 )
 
@@ -54,7 +54,7 @@ service_client = httpx.AsyncClient(
 
 ### SERVICE CONNECTION CHECK ###
 
-async def wait_for_service(url: str = f"{s.domain}:{s.service_port}/health", timeout: int = 30):
+async def wait_for_service(url: str = f"http://{s.service_host}:{s.service_port}/health", timeout: int = 30):
     async with httpx.AsyncClient() as client:
         for i in range(timeout):
             try:
@@ -63,7 +63,7 @@ async def wait_for_service(url: str = f"{s.domain}:{s.service_port}/health", tim
                     return
             except:
                 time.sleep(1)
-        print(f"INFO:     {s.domain}:{s.service_port} - Timeout ERROR!")
+        print(f"INFO:     {s.service_host}:{s.service_port} - Timeout ERROR!")
 
 #######################################################
 
@@ -91,7 +91,7 @@ async def api_prediction(client_id: int):
     async with ml_semaphore:
         timeout = httpx.Timeout(30.0, connect=30.0)
         async with httpx.AsyncClient(timeout=timeout) as client:
-            response = await service_client.post(f"{s.domain}:{s.service_port}/clients/{client_id}/insights")
+            response = await service_client.post(f"http://{s.service_host}:{s.service_port}/clients/{client_id}/insights")
             result = response.json()
 
             # CACHE SAVE
@@ -110,7 +110,7 @@ async def api_prediction(client_id: int):
 @app.post("/api/random-cli")
 async def api_random_clients():
     async with httpx.AsyncClient() as client:
-        response = await service_client.post(f"{s.domain}:{s.service_port}/random-cli")
+        response = await service_client.post(f"http://{s.service_host}:{s.service_port}/random-cli")
         return response.json()
 
 # Health Check

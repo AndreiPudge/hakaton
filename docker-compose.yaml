@@ -1,0 +1,50 @@
+services:
+  # One-shot preboot контейнер
+  shared:
+    build:
+      context: .
+      dockerfile: shared/shared.Dockerfile
+    volumes:
+      - ./data:/data
+    restart: "no"
+
+  # ML сервис
+  ml:
+    build:
+      context: .
+      dockerfile: ml/ml.Dockerfile
+    environment:
+      - SERVICE_API_KEY=${SERVICE_API_KEY}
+    volumes:
+      - ./data:/data
+    depends_on:
+      shared:
+        condition: service_completed_successfully
+    ports:
+      - "8000:8000"
+
+  # Backend
+  backend:
+    build:
+      context: .
+      dockerfile: backend/backend.Dockerfile
+    environment:
+      - SERVICE_API_KEY=${SERVICE_API_KEY}
+    volumes:
+      - ./data:/data
+    depends_on:
+      shared:
+        condition: service_completed_successfully
+    ports:
+      - "9000:9000"
+
+  # Frontend
+  frontend:
+    build:
+      context: .
+      dockerfile: frontend/frontend.Dockerfile
+    depends_on:
+      shared:
+        condition: service_completed_successfully
+    ports:
+      - "3000:3000"

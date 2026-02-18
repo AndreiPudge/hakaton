@@ -1,7 +1,10 @@
 import sqlite3
+from pathlib import Path
+
+database_path = Path("/data/insights.db")
 
 def init_database():
-    conn = sqlite3.connect('data/insights.db')
+    conn = sqlite3.connect(database_path)
     cursor = conn.cursor()
 
     cursor.execute('DROP TABLE IF EXISTS insights')

@@ -3,11 +3,11 @@ from pydantic_settings import BaseSettings
 class Settings(BaseSettings):
 
     domain: str = "http://localhost"
-    backend_host: str = "0.0.0.0"
+    backend_host: str = "backend"
     backend_port: int = 9000
-    service_host: str = "0.0.0.0"
+    service_host: str = "ml"
     service_port: int = 8000
-    frontend_host: str = "0.0.0.0"
+    frontend_host: str = "frontend"
     frontend_port: int = 3000
     
     # PATH
@@ -18,7 +18,7 @@ class Settings(BaseSettings):
     cors_origins: list = ["*"]
     
     class Config:
-        #env_file = "config/.env"
+        #env_file = ".env"
         case_sensitive = False
         extra = 'allow'  # разрешает лишние поля
 

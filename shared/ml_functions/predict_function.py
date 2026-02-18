@@ -1,15 +1,18 @@
 import pandas as pd
 from typing import List
 import pickle
+from pathlib import Path
 from sklearn.preprocessing import LabelEncoder
-from shared_config.config import settings as s
 
-columns_list_path = "shared/ml_functions/db/columns_list.txt"
-model_path = "shared/ml_functions/db/model.pkl"
+DATA_PATH = Path("/data")
+
+csv_path = DATA_PATH / "hackathon_income_test.csv"
+columns_list_path = Path("/shared/ml_functions/db/columns_list.txt")
+model_path = Path("/shared/ml_functions/db/model.pkl")
 
 def predict()->List[float]:
 
-    df = pd.read_csv(s.csv_data_path, sep = ';')
+    df = pd.read_csv(csv_path, sep = ';')
     df = df.drop(columns=['dt', 'id'])
     def convert_european_number(x):
         if isinstance(x, str):
@@ -43,5 +46,5 @@ def predict()->List[float]:
     with open(model_path, 'rb') as f:
         loaded_model = pickle.load(f)
     predictions = loaded_model.predict(df)
-    #print(predictions.tolist())
+
     return predictions.tolist()

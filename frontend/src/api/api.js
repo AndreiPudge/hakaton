@@ -1,5 +1,5 @@
 // Базовый URL бэкенда (FastAPI/Flask и т.п.)
-const API_BASE_URL = process.env.REACT_APP_API_BASE_URL || "http://localhost:9000";
+const API_BASE_URL = process.env.REACT_APP_API_BASE_URL || "http://backend:9000";
 
 // Общая функция для запросов
 /* async function apiRequest(path, options = {}) {
@@ -45,7 +45,7 @@ const API_BASE_URL = process.env.REACT_APP_API_BASE_URL || "http://localhost:900
 } */
 
   async function apiRequest(path, options = {}) {
-  const url = `http://localhost:9000${path}`;
+  const url = `http://backend:9000${path}`;
   return fetch(url, options).then(res => res.json());
 }
 
