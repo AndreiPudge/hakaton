@@ -1,3 +1,2 @@
-generate/
-generate/.generate_key.py
-generate/.env.keys
+build
+builder

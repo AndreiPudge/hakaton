@@ -5,10 +5,11 @@ from pathlib import Path
 from sklearn.preprocessing import LabelEncoder
 
 DATA_PATH = Path("/data")
+SHARED_PATH = Path(__file__).resolve().parent
 
 csv_path = DATA_PATH / "hackathon_income_test.csv"
-columns_list_path = Path("/shared/ml_functions/db/columns_list.txt")
-model_path = Path("/shared/ml_functions/db/model.pkl")
+columns_list_path = SHARED_PATH / "db/columns_list.txt"
+model_path = SHARED_PATH / "db/model.pkl"
 
 def predict()->List[float]:
 

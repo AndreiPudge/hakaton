@@ -1,13 +1,17 @@
 FROM python:3.14-alpine
 
-WORKDIR /ml
+WORKDIR /app
 
 # Копируем и устанавливаем зависимости
-COPY ../shared_config /ml/shared_config
-COPY ml/requirements.txt /ml
-RUN pip install -r requirements.txt
+COPY ../shared_config ./shared_config
+
+COPY ml/requirements.txt ./
+
+RUN pip install --no-cache-dir -r requirements.txt
 
 # Копируем код
-COPY /ml /ml
+COPY /ml ./
+
+EXPOSE 8000
 
 CMD ["python3", "-m", "uvicorn", "app.main:app", "--host", "ml", "--port", "8000"]

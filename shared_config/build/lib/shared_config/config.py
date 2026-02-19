@@ -8,7 +8,7 @@ class Settings(BaseSettings):
     service_host: str = "ml"
     service_port: int = 8000
     frontend_host: str = "frontend"
-    frontend_port: int = 3000
+    frontend_port: int = 8080
     
     # PATH
     csv_data_path: str = "data/hackathon_income_test.csv"

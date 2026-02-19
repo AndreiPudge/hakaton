@@ -1,27 +1,33 @@
-# 1. Этап сборки (необязательно для dev, но оставим для примера)
-FROM node:24-alpine AS builder
+# 1. Этап сборки
+FROM node:24-slim AS builder
 
 WORKDIR /app
 
-# Копируем только package.json и package-lock.json
+# Копируем package.json и package-lock.json
 COPY frontend/package*.json ./
 
-# Устанавливаем зависимости без dev (можно убрать --omit=dev, если нужен dev сервер)
-RUN npm install
+# Устанавливаем только prod зависимости
+RUN npm install --omit=dev
 
 # Копируем исходники
 COPY frontend/ ./
 
-# 2. Этап запуска
-FROM node:24-alpine
+# Собираем production-бандл
+RUN npm run build
 
-WORKDIR /app
+# 2. Этап финального образа — Nginx
+FROM nginx:alpine
 
-# Копируем весь билд/проект из builder
-COPY --from=builder /app /app
+# Удаляем дефолтный html
+RUN rm -rf /usr/share/nginx/html/*
 
-# Открываем порт dev-сервера
-EXPOSE 3000
+# Копируем билд
+COPY --from=builder /app/build /usr/share/nginx/html
 
-# Запускаем React dev server
-CMD ["npm", "start"]
+# Копируем конфиг Nginx
+COPY frontend/nginx/default.conf /etc/nginx/conf.d/default.conf
+
+# Открываем порт
+EXPOSE 8080
+
+CMD ["nginx", "-g", "daemon off;"]
