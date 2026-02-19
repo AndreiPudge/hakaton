@@ -22,3 +22,5 @@ console.log
 run.sh.old
 hakaton.code-workspace
 data/insights.db
+__pycache__
+.pyc
