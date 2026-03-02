@@ -3,8 +3,6 @@ FROM python:3.14-alpine
 WORKDIR /app
 
 # Копируем и устанавливаем зависимости
-COPY ../shared_config ./shared_config
-
 COPY backend/requirements.txt ./
 
 RUN pip install --no-cache-dir -r requirements.txt
@@ -12,6 +10,6 @@ RUN pip install --no-cache-dir -r requirements.txt
 # Копируем код
 COPY /backend ./
 
-EXPOSE 9000
+ENV PYTHONUNBUFFERED=1
 
-CMD ["python3", "-m", "uvicorn", "app.main:app", "--host", "backend", "--port", "9000"]
+CMD ["python3", "-u", "-m", "uvicorn", "app.main:app", "--host", "0.0.0.0", "--port", "8443"]

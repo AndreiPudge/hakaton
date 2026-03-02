@@ -1,5 +1,6 @@
+const cfg = await fetch("/config.json").then(r => r.json());
+fetch(`${cfg.api.baseURL}/ping`);
 
-const API_BASE_URL = "http://localhost:9000"; 
 // пусто → используется proxy / same-origin
 
 type HttpMethod = "GET" | "POST" | "PUT" | "PATCH" | "DELETE";
@@ -10,7 +11,7 @@ async function request<T>(
   body?: unknown
 ): Promise<T> {
   try {
-    const response = await fetch(`${API_BASE_URL}${url}`, {
+    const response = await fetch(`${cfg.api.baseURL}${url}`, {
       method,
       headers: {
         "Content-Type": "application/json",

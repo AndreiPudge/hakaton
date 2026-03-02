@@ -1,6 +1,13 @@
 import sqlite3
 import sys
 from pathlib import Path
+import logging
+
+logging.basicConfig(
+    level=logging.INFO,
+    format="INFO:     %(message)s",
+)
+logger = logging.getLogger(__name__)
 
 ml_function_path = Path("ml_functions").resolve()
 sys.path.append(str(ml_function_path))
@@ -21,18 +28,20 @@ def paste_insights_to_db():
     conn.commit()
 
     # Первые 10
-    cursor.execute('SELECT * FROM insights ORDER BY id LIMIT 10')
-    first_10 = cursor.fetchall()
-    print("First 10:")
-    for row in first_10:
-       print(row)
+    #cursor.execute('SELECT * FROM insights ORDER BY id LIMIT 10')
+    #first_10 = cursor.fetchall()
+    #print("First 10:")
+    #for row in first_10:
+    #   print(row)
 
     # Последние 10  
-    cursor.execute('SELECT * FROM insights ORDER BY id DESC LIMIT 10')
-    last_10 = cursor.fetchall()
-    print("\nLast 10:")
-    for row in last_10:
-       print(row)
+    #cursor.execute('SELECT * FROM insights ORDER BY id DESC LIMIT 10')
+    #last_10 = cursor.fetchall()
+    #print("\nLast 10:")
+    #for row in last_10:
+    #   print(row)
 
     conn.close()
+
+    logger.info("Data successfully written!")
 paste_insights_to_db()

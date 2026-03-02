@@ -2,7 +2,7 @@
 
 # run.sh
 
-SERVICE_API_KEY=$(python3 -c "import secrets; print(secrets.token_urlsafe(32))")
-export SERVICE_API_KEY
+export $(grep -v '^#' .env | xargs)
+envsubst < frontend/public/config.template.json > frontend/public/config.json
 
 docker compose up --build

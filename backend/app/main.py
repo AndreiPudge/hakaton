@@ -4,15 +4,21 @@ import time
 from contextlib import asynccontextmanager
 from app.api.router import router
 from fastapi.middleware.cors import CORSMiddleware
-import os
-from shared_config.config import settings as s
+import logging
+from app.settings import settings as s
 from app.middleware.hmr_filter import hmr_filter_middleware
 from asyncio import Semaphore
 import asyncio
 
+logging.basicConfig(
+    level=logging.INFO,
+    format="INFO:     %(message)s",
+)
+logger = logging.getLogger(__name__)
 
 @asynccontextmanager
 async def lifespan(app: FastAPI):
+    logger.info("adasd")
     asyncio.create_task(wait_for_service())
     yield
 
@@ -40,18 +46,6 @@ async def hmr_middleware(request: Request, call_next):
 
 #######################################################
 
-### Client Modifications ###
-
-SERVICE_KEY = os.getenv("SERVICE_API_KEY")
-if not SERVICE_KEY:
-    print("WARNING:     SERVICE_API_KEY NOT SET!")
-service_client = httpx.AsyncClient(
-    base_url=f"http://{s.service_host}:{s.service_port}",
-    headers={"X-API-KEY": SERVICE_KEY} if SERVICE_KEY else {}
-)
-
-#######################################################
-
 ### SERVICE CONNECTION CHECK ###
 
 async def wait_for_service(url: str = f"http://{s.service_host}:{s.service_port}/health", timeout: int = 30):
@@ -60,10 +54,10 @@ async def wait_for_service(url: str = f"http://{s.service_host}:{s.service_port}
             try:
                 response = await client.get(url, timeout = 1)
                 if response.status_code == 200:
-                    return
+                    return logger.info(f"Connection to the Service on port [{s.service_port}] is established!")
             except:
                 time.sleep(1)
-        print(f"INFO:     {s.service_host}:{s.service_port} - Timeout ERROR!")
+        logger.info(f"{s.service_host}:{s.service_port} - Timeout ERROR!")
 
 #######################################################
 
@@ -91,7 +85,7 @@ async def api_prediction(client_id: int):
     async with ml_semaphore:
         timeout = httpx.Timeout(30.0, connect=30.0)
         async with httpx.AsyncClient(timeout=timeout) as client:
-            response = await service_client.post(f"http://{s.service_host}:{s.service_port}/clients/{client_id}/insights")
+            response = await client.post(f"http://{s.service_host}:{s.service_port}/clients/{client_id}/insights")
             result = response.json()
 
             # CACHE SAVE
@@ -110,7 +104,7 @@ async def api_prediction(client_id: int):
 @app.post("/api/random-cli")
 async def api_random_clients():
     async with httpx.AsyncClient() as client:
-        response = await service_client.post(f"http://{s.service_host}:{s.service_port}/random-cli")
+        response = await client.post(f"http://{s.service_host}:{s.service_port}/random-cli")
         return response.json()
 
 # Health Check

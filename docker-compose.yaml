@@ -13,30 +13,38 @@ services:
     build:
       context: .
       dockerfile: ml/ml.Dockerfile
-    environment:
-      - SERVICE_API_KEY=${SERVICE_API_KEY}
     volumes:
       - ./data:/data
+    env_file:
+      - .env
     depends_on:
       shared:
         condition: service_completed_successfully
-    ports:
-      - "8000:8000"
+    restart: unless-stopped
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://ml:8001/health"]
+      interval: 30s
+      timeout: 5s
+      retries: 3
 
   # Backend
   backend:
     build:
       context: .
       dockerfile: backend/backend.Dockerfile
-    environment:
-      - SERVICE_API_KEY=${SERVICE_API_KEY}
     volumes:
-      - ./data:/data
+      - ./data:/data:ro
+    env_file:
+      - .env
     depends_on:
       shared:
         condition: service_completed_successfully
-    ports:
-      - "9000:9000"
+    restart: unless-stopped
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://0.0.0.0:8443/health"]
+      interval: 30s
+      timeout: 5s
+      retries: 3
 
   # Frontend
   frontend:
@@ -48,3 +56,4 @@ services:
         condition: service_completed_successfully
     ports:
       - "3000:8080"
+    restart: unless-stopped

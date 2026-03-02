@@ -1,5 +1,8 @@
 // Базовый URL бэкенда (FastAPI/Flask и т.п.)
-const API_BASE_URL = process.env.REACT_APP_API_BASE_URL || "http://backend:9000";
+const cfg = await fetch("/config.json").then(r => r.json());
+fetch(`${cfg.api.baseURL}/ping`);
+//const API_BASE_URL = process.env.REACT_APP_API_BASE_URL || "http://backend:8443";
+
 
 // Общая функция для запросов
 /* async function apiRequest(path, options = {}) {
@@ -45,8 +48,8 @@ const API_BASE_URL = process.env.REACT_APP_API_BASE_URL || "http://backend:9000"
 } */
 
   async function apiRequest(path, options = {}) {
-  const url = `http://backend:9000${path}`;
-  return fetch(url, options).then(res => res.json());
+  //const url = `${cfg.api.API_BASE_URL}${path}`;
+  //return fetch(url, options).then(res => res.json());
 }
 
 // -------------------- КЛИЕНТЫ --------------------
@@ -55,7 +58,7 @@ const API_BASE_URL = process.env.REACT_APP_API_BASE_URL || "http://backend:9000"
 // GET /api/clients?search=...
 export async function fetchClientsApi(searchQuery) {
   const query = searchQuery ? searchQuery.trim() : "";
-  const path = `${API_BASE_URL}/api/clients?search=${encodeURIComponent(query)}`;
+  const path = `${cfg.api.baseURL}/api/clients?search=${encodeURIComponent(query)}`;
   return apiRequest(path, {
     method: "GET",
   });
@@ -66,7 +69,7 @@ export async function fetchClientsApi(searchQuery) {
 // Получить прогноз дохода, факторы и рекомендации
 // GET /api/clients/:id/insights
 export async function fetchClientInsightsApi(clientId, requestData = {}) {
-  const path = `${API_BASE_URL}/api/clients/${clientId}/insights`;
+  const path = `${cfg.api.baseURL}/api/clients/${clientId}/insights`;
   return apiRequest(path, {
     method: "POST",
     headers: { "Content-Type": "application/json", },

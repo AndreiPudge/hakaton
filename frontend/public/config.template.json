@@ -1,0 +1,10 @@
+{
+    "app": {
+        "name": "${APP_NAME}",
+        "version": "${APP_VERSION}"
+    },
+    
+    "api": {
+        "baseURL": "${API_BASE_URL}"
+    }
+}

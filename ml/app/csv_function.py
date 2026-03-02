@@ -3,7 +3,7 @@ import random
 from pathlib import Path
 from pydantic import BaseModel
 from typing import List
-from shared_config.config import settings as s
+from app.settings import settings as s
 
 BASE_DIR = Path(__file__).resolve().parent.parent.parent
 csv_path = BASE_DIR / s.csv_data_path

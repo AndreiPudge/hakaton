@@ -22,3 +22,4 @@ console.log
 run.sh.old
 hakaton.code-workspace
 data/insights.db
+frontend/public/config.json
